@@ -195,11 +195,11 @@ const data = await client.request({
 
 ## Releasing (maintainers)
 
-Releases are driven by [Changesets](https://github.com/changesets/changesets) and the `release` GitHub Actions workflow:
+Releases are driven by [Changesets](https://github.com/changesets/changesets) and the `release` GitHub Actions workflow, which publishes via npm [trusted publishing (OIDC)](https://docs.npmjs.com/trusted-publishers) — no `NPM_TOKEN` secret required.
 
-1. Add an `NPM_TOKEN` repo secret (an npm automation token with publish rights).
+1. On npmjs.com, configure a trusted publisher for the package: org/user `NickTacke`, repository `postnl-client`, workflow `release.yml`, action `npm publish`.
 2. Merging a PR with a changeset to `main` opens an auto-generated "Version Packages" PR.
-3. Merging that "Version Packages" PR versions the package and publishes it to npm.
+3. Merging that "Version Packages" PR versions the package and publishes it to npm via short-lived OIDC credentials (with provenance).
 
 ## License
 
