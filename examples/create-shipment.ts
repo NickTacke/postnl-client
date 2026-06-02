@@ -1,6 +1,7 @@
 // create a v4 shipment (label + confirm in one call) and decode the label.
 // run with: POSTNL_APIKEY=... bun run examples/create-shipment.ts
 // in your own project, import from "postnl-client" instead of "../src/index".
+import { writeFileSync } from "node:fs";
 import { PostNLApiError, PostNLClient } from "../src/index";
 
 const apiKey = process.env.POSTNL_APIKEY;
@@ -43,7 +44,7 @@ try {
   const label = item?.labels?.[0];
   if (label) {
     console.log("label content type:", label.contentType);
-    await Bun.write(`label-${item?.barcode}.pdf`, label.bytes());
+    writeFileSync(`label-${item?.barcode}.pdf`, label.bytes());
   }
 } catch (err) {
   if (err instanceof PostNLApiError) {
