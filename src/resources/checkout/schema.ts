@@ -6,7 +6,7 @@ import type {
   CheckoutOption,
   CountryCode,
 } from "../../constants/enums";
-import { parsePnlDate } from "../../core/codec/dates";
+import { pnlDateField, sustainabilitySchema } from "../../core/codec/fields";
 import { pnlArray, pnlNum } from "../../core/codec/helpers";
 import { stripUndefined } from "../../core/codec/object";
 
@@ -66,15 +66,6 @@ export function toCheckoutRequestBody(input: CheckoutRequestInput, orderDate: st
 }
 
 // ---------- response ----------
-
-const pnlDateField = z
-  .string()
-  .optional()
-  .transform((v) => (v == null ? undefined : parsePnlDate(v)));
-
-const sustainabilitySchema = z
-  .object({ Code: z.string().optional(), Description: z.string().optional() })
-  .transform((s) => stripUndefined({ code: s.Code, description: s.Description }));
 
 // CheckoutTimeFrame { From, To, Options(plain array), ShippingDate, Sustainability? }
 const timeframeSchema = z

@@ -1,17 +1,7 @@
 import { z } from "zod";
-import { parsePnlDate } from "../../core/codec/dates";
+import { pnlDateField, sustainabilitySchema } from "../../core/codec/fields";
 import { pnlArray } from "../../core/codec/helpers";
 import { stripUndefined } from "../../core/codec/object";
-
-// response dates are dd-MM-yyyy
-const pnlDateField = z
-  .string()
-  .optional()
-  .transform((v) => (v == null ? undefined : parsePnlDate(v)));
-
-const sustainabilitySchema = z
-  .object({ Code: z.string().optional(), Description: z.string().optional() })
-  .transform((s) => stripUndefined({ code: s.Code, description: s.Description }));
 
 // TimeframeTimeframe { From, To, Options({string:...}), Sustainability? }; times stay strings
 const timeframeTimeframeSchema = z

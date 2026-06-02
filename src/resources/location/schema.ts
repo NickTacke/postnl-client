@@ -1,13 +1,10 @@
 import { z } from "zod";
 import { IGNORED_LOCATION_OPTIONS } from "../../constants/enums";
+import { sustainabilitySchema } from "../../core/codec/fields";
 import { pnlArray, pnlNum, pnlStringWrapped } from "../../core/codec/helpers";
 import { stripUndefined } from "../../core/codec/object";
 
 const IGNORED = new Set<string>(IGNORED_LOCATION_OPTIONS);
-
-const sustainabilitySchema = z
-  .object({ Code: z.string().optional(), Description: z.string().optional() })
-  .transform((s) => stripUndefined({ code: s.Code, description: s.Description }));
 
 // LocationsAddress { City, Countrycode, HouseNr(int), HouseNrExt, Remark, Street, Zipcode }
 const addressSchema = z
