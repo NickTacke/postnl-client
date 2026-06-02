@@ -21,6 +21,9 @@ export type {
   DeliveryDateResponse,
   SentDateResponse,
 } from "./resources/delivery-date/schema";
+export { TimeframeResource } from "./resources/timeframe";
+export type { TimeframeGetInput } from "./resources/timeframe";
+export type { TimeframeResponse } from "./resources/timeframe/schema";
 export type {
   TrackingOptions,
   TrackingByReferenceOptions,
