@@ -1,22 +1,30 @@
-// postnl date <-> Date. handles dd-MM-yyyy[ HH:mm:ss] and iso yyyy-MM-dd
+// postnl date <-> Date. handles dd-MM-yyyy[ HH:mm:ss] and iso yyyy-MM-dd.
+// parsePnlDate/formatDate operate in LOCAL time (postnl dates are nl-local).
 const pad = (n: number) => String(n).padStart(2, "0");
 const num = (v: string | undefined) => Number(v ?? 0);
 
+const ISO = /^\d{4}-\d{2}-\d{2}$/;
+const NL_DATE = /^\d{2}-\d{2}-\d{4}$/;
+const NL_DATETIME = /^\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}$/;
+
 export function parsePnlDate(input: string): Date {
-  const [datePart = "", timePart] = input.trim().split(" ");
+  const trimmed = input.trim();
+  const [datePart = "", timePart] = trimmed.split(" ");
   let y: number;
   let mo: number;
   let d: number;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
+  if (ISO.test(trimmed)) {
     const [yy, mm, dd] = datePart.split("-");
     y = num(yy);
     mo = num(mm);
     d = num(dd);
-  } else {
+  } else if (NL_DATE.test(trimmed) || NL_DATETIME.test(trimmed)) {
     const [dd, mm, yy] = datePart.split("-");
     y = num(yy);
     mo = num(mm);
     d = num(dd);
+  } else {
+    throw new Error(`invalid postnl date: ${input}`);
   }
   const [hh, mi, ss] = (timePart ?? "00:00:00").split(":");
   return new Date(y, mo - 1, d, num(hh), num(mi), num(ss));

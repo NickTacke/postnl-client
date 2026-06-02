@@ -11,6 +11,9 @@ describe("parsePnlDate", () => {
   it("parses iso yyyy-MM-dd", () => {
     expect(parsePnlDate("2016-04-20")).toEqual(new Date(2016, 3, 20));
   });
+  it("throws on garbage input", () => {
+    expect(() => parsePnlDate("not-a-date")).toThrow("invalid postnl date: not-a-date");
+  });
 });
 
 describe("formatDate", () => {
