@@ -11,6 +11,13 @@ export class PostNLValidationError extends PostNLError {
   }
 }
 
+export class PostNLTimeoutError extends PostNLError {
+  constructor(readonly timeoutMs: number) {
+    super(`postnl request timed out after ${timeoutMs}ms`);
+    this.name = "PostNLTimeoutError";
+  }
+}
+
 export class PostNLApiError extends PostNLError {
   constructor(
     readonly status: number,
@@ -93,8 +100,8 @@ export function parseError(
   if (status === 401) return new PostNLAuthError(status, message, code, detail, body);
   if (status === 429) {
     const err = new PostNLRateLimitError(status, message, code, detail, body);
-    const ra = headers?.["retry-after"];
-    if (ra) err.retryAfter = Number(ra);
+    const ra = Number(headers?.["retry-after"]);
+    if (Number.isFinite(ra)) err.retryAfter = ra;
     return err;
   }
   if (status === 405) return new PostNLMethodNotAllowedError(status, message, code, detail, body);
