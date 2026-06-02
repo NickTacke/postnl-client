@@ -20,12 +20,12 @@ const addressSchema = z
   .transform((a) =>
     stripUndefined({
       city: a.City,
-      countrycode: a.Countrycode,
-      houseNr: a.HouseNr,
-      houseNrExt: a.HouseNrExt,
+      countryCode: a.Countrycode,
+      houseNumber: a.HouseNr,
+      houseNumberExtension: a.HouseNrExt,
       remark: a.Remark,
       street: a.Street,
-      zipcode: a.Zipcode,
+      postalCode: a.Zipcode,
     }),
   );
 

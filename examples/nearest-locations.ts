@@ -19,7 +19,7 @@ try {
   for (const loc of locations) {
     const a = loc.address;
     console.log(
-      `${loc.locationCode} ${loc.name} - ${a?.street} ${a?.houseNr}, ${a?.zipcode} ${a?.city} (${loc.distance}m)`,
+      `${loc.locationCode} ${loc.name} - ${a?.street} ${a?.houseNumber}, ${a?.postalCode} ${a?.city} (${loc.distance}m)`,
     );
   }
 } catch (err) {

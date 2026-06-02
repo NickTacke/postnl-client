@@ -81,7 +81,7 @@ describe("location.nearest", () => {
     expect(loc?.distance).toBe(102);
     expect(loc?.locationCode).toBe(163043);
     expect(loc?.openingHours?.monday).toBe("08:00-18:00");
-    expect(loc?.address?.houseNr).toBe(136);
+    expect(loc?.address?.houseNumber).toBe(136);
   });
 
   it("normalizes a single ResponseLocation object to an array", async () => {

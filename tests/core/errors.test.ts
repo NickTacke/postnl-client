@@ -35,6 +35,20 @@ describe("parseError", () => {
     expect(err.message).toBe("No results found.");
     expect(err.code).toBe("0010");
   });
+  it("labelling errors[] prefers the specific Description over the generic Error", () => {
+    const err = parseError(400, {
+      Errors: [
+        {
+          Error: "Validation failed for shipment: 3SX",
+          Code: "1900202",
+          Description: "Address type 01 and 02 is required",
+        },
+      ],
+    });
+    expect(err).toBeInstanceOf(PostNLBadRequestError);
+    expect(err.message).toBe("Address type 01 and 02 is required");
+    expect(err.code).toBe("1900202");
+  });
   it("legacy barcode errors[] -> bad request", () => {
     const err = parseError(400, { errors: [{ ErrorMsg: "bad serie", ErrorNumber: "11" }] });
     expect(err).toBeInstanceOf(PostNLBadRequestError);
