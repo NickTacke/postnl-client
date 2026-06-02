@@ -140,4 +140,13 @@ describe("location.lookup", () => {
     expect(out.location?.name).toBe("Looked up");
     expect(out.location?.latitude).toBe(52.1);
   });
+
+  it("stringifies a numeric locationCode", async () => {
+    const fetchMock = mockFetch(200, {
+      GetLocationsResult: { ResponseLocation: { Name: "Looked up", LocationCode: "163043" } },
+    });
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    await c.location.lookup({ locationCode: 163043 });
+    expect(url(fetchMock)).toContain("/shipment/v2_1/locations/lookup?LocationCode=163043");
+  });
 });

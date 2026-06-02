@@ -38,7 +38,8 @@ export interface LocationAreaInput extends CommonLocationOptions {
 }
 
 export interface LocationLookupInput {
-  locationCode: string;
+  // accepts the numeric locationCode read from a Location response
+  locationCode: string | number;
 }
 
 const asDate = (v: Date | string | undefined) => (v instanceof Date ? formatDate(v, "date") : v);
@@ -101,7 +102,7 @@ export class LocationResource extends BaseResource {
   lookup(input: LocationLookupInput): Promise<LocationLookupResponse> {
     return this.call({
       operation: "locationLookup",
-      query: { LocationCode: input.locationCode },
+      query: { LocationCode: String(input.locationCode) },
       responseSchema: locationLookupResponseSchema,
     });
   }
