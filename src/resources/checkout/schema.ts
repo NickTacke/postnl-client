@@ -73,7 +73,7 @@ const timeframeSchema = z
     From: z.string().optional(),
     To: z.string().optional(),
     Options: pnlArray(z.string()),
-    ShippingDate: z.string().optional(),
+    ShippingDate: pnlDateField,
     Sustainability: sustainabilitySchema.optional(),
   })
   .transform((t) =>
@@ -171,7 +171,7 @@ const checkoutLocationSchema = z
 const pickupOptionSchema = z
   .object({
     PickupDate: pnlDateField,
-    ShippingDate: z.string().optional(),
+    ShippingDate: pnlDateField,
     Option: z.string().optional(),
     Locations: pnlArray(checkoutLocationSchema),
   })
@@ -187,7 +187,7 @@ const pickupOptionSchema = z
 // CheckoutWarning { DeliveryDate, Code, Description, Options(plain string) }
 const warningSchema = z
   .object({
-    DeliveryDate: z.string().optional(),
+    DeliveryDate: pnlDateField,
     Code: z.string().optional(),
     Description: z.string().optional(),
     Options: z.string().optional(),
