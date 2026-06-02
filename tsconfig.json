@@ -12,7 +12,7 @@
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
-    "types": []
+    "types": ["bun"]
   },
   "include": ["src", "tests"]
 }

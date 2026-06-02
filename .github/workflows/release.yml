@@ -9,9 +9,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
+      # version-pr only until slice 9; add `publish: bunx changeset publish` once npm_token secret is set
       - uses: changesets/action@v1
         with:
-          publish: bunx changeset publish
+          version: bunx changeset version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -24,12 +24,12 @@
   "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
     "build": "tsup",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "format": "biome format --write .",
-    "check": "biome check . && tsc --noEmit && vitest run",
+    "check": "biome check . && tsc --noEmit && bun test",
     "prepublishOnly": "bun run check && bun run build",
     "release": "changeset publish"
   },
@@ -39,9 +39,9 @@
     "@changesets/cli": "^2.27.0",
     "@commitlint/cli": "^19.0.0",
     "@commitlint/config-conventional": "^19.0.0",
+    "@types/bun": "^1.1.0",
     "lefthook": "^1.7.0",
     "tsup": "^8.3.0",
-    "typescript": "^5.6.0",
-    "vitest": "^2.1.0"
+    "typescript": "^5.6.0"
   }
 }
