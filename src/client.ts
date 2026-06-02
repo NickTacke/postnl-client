@@ -1,5 +1,7 @@
+import type { z } from "zod";
 import { type PostNLClientOptions, resolveConfig } from "./config";
 import { Transport } from "./core/http";
+import type { Family, HttpMethod } from "./core/types";
 import { AddressResource } from "./resources/address";
 import { BarcodeResource } from "./resources/barcode";
 import { CheckoutResource } from "./resources/checkout";
@@ -34,5 +36,26 @@ export class PostNLClient {
     this.location = new LocationResource(this.transport);
     this.checkout = new CheckoutResource(this.transport);
     this.address = new AddressResource(this.transport, config.environment);
+  }
+
+  // low-level escape hatch for endpoints/params not yet covered
+  async request<T>(args: {
+    family: Family;
+    method: HttpMethod;
+    path: string;
+    pathParams?: Record<string, string>;
+    query?: Record<string, string | string[] | number | boolean | undefined>;
+    body?: unknown;
+    schema?: z.ZodType<T>;
+  }): Promise<T> {
+    const raw = await this.transport.send<T>({
+      family: args.family,
+      method: args.method,
+      path: args.path,
+      pathParams: args.pathParams,
+      query: args.query,
+      body: args.body,
+    });
+    return args.schema ? args.schema.parse(raw) : (raw as T);
   }
 }
