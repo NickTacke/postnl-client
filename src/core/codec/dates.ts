@@ -1,5 +1,8 @@
 // postnl date <-> Date. handles dd-MM-yyyy[ HH:mm:ss] and iso yyyy-MM-dd.
 // parsePnlDate/formatDate operate in LOCAL time (postnl dates are nl-local).
+// lenient postnl date: a parsed Date or the raw wire string when format is unknown
+export type PnlDate = Date | string;
+
 const pad = (n: number) => String(n).padStart(2, "0");
 const num = (v: string | undefined) => Number(v ?? 0);
 

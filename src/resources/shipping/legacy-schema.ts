@@ -3,20 +3,11 @@ import type { AddressType, LabellingCurrency, ShipmentTypeLegacy } from "../../c
 import { toDecodedLabel } from "../../core/base64";
 import { formatDate } from "../../core/codec/dates";
 import { pnlArray } from "../../core/codec/helpers";
+import { stripUndefined } from "../../core/codec/object";
 
 // legacy send requests use native types + PascalCase wire keys.
 // public api is camelCase in; each schema .transform()s to the wire shape.
 // undefined wire keys are stripped so exactOptionalPropertyTypes stays happy downstream.
-// drops undefined keys so output types model them as optional (matches stripped runtime shape)
-const stripUndefined = <T extends Record<string, unknown>>(
-  obj: T,
-): { [K in keyof T]?: Exclude<T[K], undefined> } => {
-  const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(obj)) {
-    if (v !== undefined) out[k] = v;
-  }
-  return out as { [K in keyof T]?: Exclude<T[K], undefined> };
-};
 
 // MessageTimeStamp is dd-MM-yyyy HH:mm:ss; accept a Date or pre-formatted string, default now
 const messageTimeStamp = z.preprocess(
