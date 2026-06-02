@@ -12,6 +12,37 @@ export { BarcodeResource } from "./resources/barcode";
 export { ShippingResource } from "./resources/shipping";
 export { ReturnResource } from "./resources/return";
 export { TrackingResource } from "./resources/tracking";
+export { DeliveryDateResource } from "./resources/delivery-date";
+export type {
+  DeliveryDateCalculateInput,
+  SentDateInput,
+} from "./resources/delivery-date";
+export type {
+  DeliveryDateResponse,
+  SentDateResponse,
+} from "./resources/delivery-date/schema";
+export { TimeframeResource } from "./resources/timeframe";
+export type { TimeframeGetInput } from "./resources/timeframe";
+export type { TimeframeResponse } from "./resources/timeframe/schema";
+export { LocationResource } from "./resources/location";
+export type {
+  LocationNearestInput,
+  LocationNearestByGeocodeInput,
+  LocationAreaInput,
+  LocationLookupInput,
+} from "./resources/location";
+export type {
+  Location,
+  LocationsResponse,
+  LocationLookupResponse,
+} from "./resources/location/schema";
+export { CheckoutResource } from "./resources/checkout";
+export type {
+  CheckoutRequestInput,
+  CheckoutCutOffTimeInput,
+  CheckoutAddressInput,
+  CheckoutResponse,
+} from "./resources/checkout/schema";
 export type {
   TrackingOptions,
   TrackingByReferenceOptions,
