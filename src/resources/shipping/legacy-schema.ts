@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { AddressType, LabellingCurrency, ShipmentTypeLegacy } from "../../constants/enums";
-import { labelContentType, toDecodedLabel } from "../../core/base64";
+import { toDecodedLabel } from "../../core/base64";
 import { formatDate } from "../../core/codec/dates";
 import { pnlArray } from "../../core/codec/helpers";
 
@@ -154,9 +154,9 @@ export const legacyProductOptionSchema = z
 export const legacyCustomsContentSchema = z
   .object({
     description: z.string(),
-    quantity: z.string(),
-    weight: z.string(),
-    value: z.string(),
+    quantity: z.number().int(),
+    weight: z.number().int(),
+    value: z.number(),
     hsTariffNr: z.string().optional(),
     countryOfOrigin: z.string().optional(),
   })
@@ -378,9 +378,6 @@ const legacyLabelSchema = z
     const format = l.OutputType ?? l.Labeltype ?? "";
     return {
       ...toDecodedLabel(l.Content ?? "", format),
-      contentType: l.OutputType
-        ? labelContentType(l.OutputType)
-        : labelContentType(l.Labeltype ?? ""),
       labeltype: l.Labeltype,
       outputType: l.OutputType,
     };
@@ -390,8 +387,8 @@ const warningSchema = z
   .object({ Code: z.string().optional(), Description: z.string().optional() })
   .transform((w) => stripUndefined({ code: w.Code, description: w.Description }));
 
-// Errors are loosely-typed objects in the sdk; pass through untouched
-const errorSchema = z.record(z.unknown());
+// Errors is List[Any] in the sdk; entries may be non-objects, pass through untouched
+const errorSchema = z.unknown();
 
 // LabellingResponseShipment
 const labellingResponseShipmentSchema = z
