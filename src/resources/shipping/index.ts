@@ -1,4 +1,5 @@
 import { BaseResource } from "../../core/base-resource";
+import { ShippingLegacyResource } from "./legacy";
 import {
   type ConfirmV4Request,
   type LabellingV4Request,
@@ -11,7 +12,8 @@ import {
 } from "./schema";
 
 export class ShippingResource extends BaseResource {
-  // legacy added in slice 4
+  // legacy label/confirm (POST /shipment/v2_2/label, /shipment/v2/confirm)
+  readonly legacy = new ShippingLegacyResource(this.transport);
 
   // create + confirm in one call (labelconfirm)
   create(input: ShipmentV4Request): Promise<ShipmentPostResponse> {

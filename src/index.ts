@@ -12,6 +12,7 @@ export { BarcodeResource } from "./resources/barcode";
 export { ShippingResource } from "./resources/shipping";
 export { ReturnResource } from "./resources/return";
 export type { BarcodeV4Request, BarcodeV4Response } from "./resources/barcode/schema";
+export type { BarcodeLegacyInput } from "./resources/barcode/legacy";
 export type {
   ShipmentV4Request,
   LabellingV4Request,
@@ -19,3 +20,10 @@ export type {
   ShipmentPostResponse,
 } from "./resources/shipping/schema";
 export type { ReturnGenerateRequest } from "./resources/return/schema";
+export type {
+  LabellingRequest,
+  LabellingResponse,
+  ConfirmingRequest,
+  ConfirmingResponse,
+} from "./resources/shipping/legacy-schema";
+export type { LabelLegacyOptions } from "./resources/shipping/legacy";
