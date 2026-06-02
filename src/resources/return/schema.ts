@@ -57,6 +57,7 @@ export const returnInternationalSchema = z.object({
 // CollectionService
 export const returnCollectionServiceSchema = z.object({
   timeWindow: isoDate.optional(),
+  // should match items.length for multi-collo shipments
   itemCount: z.number().int().default(1),
 });
 

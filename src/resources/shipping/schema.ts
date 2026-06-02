@@ -173,6 +173,7 @@ const shipmentV4BaseShape = {
   handOverDate: isoDate.optional(),
   deliveryLocation: deliveryLocationV4Schema.optional(),
   returnOptions: returnOptionsV4Schema.optional(),
+  // should match items.length for multi-collo shipments
   itemCount: z.number().int().default(1),
   items: z.array(itemV4Schema).optional(),
   internationalShipmentData: internationalShipmentDataV4Schema.optional(),
@@ -216,8 +217,9 @@ const labelResponseSchema = z
 
 export const productServiceSchema = z.object({
   productData: z.string().optional(),
-  services: z.array(z.unknown()).optional(),
-  bundles: z.array(z.unknown()).optional(),
+  // untyped in sdk (List[Any]); doc examples show objects
+  services: z.array(z.record(z.unknown())).optional(),
+  bundles: z.array(z.record(z.unknown())).optional(),
 });
 
 // Item / ItemPNPShipmentLabel / ItemPNPGenerateShipmentReturnV4 (superset; labels optional)
@@ -238,6 +240,6 @@ export const responseItemSchema = z.object({
 export const shipmentPostResponseSchema = z.object({
   items: z.array(responseItemSchema).default([]),
   traceId: z.string().optional(),
-  warnings: z.array(z.unknown()).optional(),
+  warnings: z.array(z.string()).optional(),
 });
 export type ShipmentPostResponse = z.infer<typeof shipmentPostResponseSchema>;
