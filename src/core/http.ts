@@ -6,8 +6,8 @@ export interface SendArgs {
   family: Family;
   method: HttpMethod;
   path: string; // may contain {param} tokens
-  pathParams?: Record<string, string>;
-  query?: Record<string, string | string[] | number | boolean | undefined>;
+  pathParams?: Record<string, string> | undefined;
+  query?: Record<string, string | string[] | number | boolean | undefined> | undefined;
   body?: unknown;
 }
 
