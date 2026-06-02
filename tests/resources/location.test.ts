@@ -56,6 +56,19 @@ describe("location.nearest", () => {
     expect(u).toContain("DeliveryOptions=PG");
   });
 
+  it("csv-joins multiple delivery options into a single query param", async () => {
+    const fetchMock = mockFetch(200, locationBody());
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    await c.location.nearest({
+      countryCode: "NL",
+      postalCode: "2132WT",
+      deliveryOptions: ["PG", "PA"],
+    });
+    const u = url(fetchMock);
+    expect(decodeURIComponent(u)).toContain("DeliveryOptions=PG,PA");
+    expect(u).not.toContain("DeliveryOptions=PG&");
+  });
+
   it("filters internal delivery options, unwraps opening hours, coerces stringified numbers", async () => {
     const fetchMock = mockFetch(200, locationBody());
     const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });

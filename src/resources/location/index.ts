@@ -57,7 +57,7 @@ export class LocationResource extends BaseResource {
         HouseNumberExtension: input.houseNumberExtension,
         DeliveryDate: asDate(input.deliveryDate),
         OpeningTime: input.openingTime,
-        DeliveryOptions: input.deliveryOptions,
+        DeliveryOptions: input.deliveryOptions?.join(","),
       },
       responseSchema: locationsResponseSchema,
     });
@@ -73,7 +73,7 @@ export class LocationResource extends BaseResource {
         CountryCode: input.countryCode,
         DeliveryDate: asDate(input.deliveryDate),
         OpeningTime: input.openingTime,
-        DeliveryOptions: input.deliveryOptions,
+        DeliveryOptions: input.deliveryOptions?.join(","),
       },
       responseSchema: locationsResponseSchema,
     });
@@ -91,7 +91,7 @@ export class LocationResource extends BaseResource {
         CountryCode: input.countryCode,
         DeliveryDate: asDate(input.deliveryDate),
         OpeningTime: input.openingTime,
-        DeliveryOptions: input.deliveryOptions,
+        DeliveryOptions: input.deliveryOptions?.join(","),
       },
       responseSchema: locationsResponseSchema,
     });
