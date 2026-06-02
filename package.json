@@ -1,15 +1,29 @@
 {
   "name": "postnl-client",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "typescript client for the postnl ecommerce api (v4-first, legacy supported)",
   "type": "module",
   "license": "MIT",
   "author": "NickTacke",
-  "repository": { "type": "git", "url": "git+https://github.com/NickTacke/postnl-client.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NickTacke/postnl-client.git"
+  },
   "homepage": "https://github.com/NickTacke/postnl-client#readme",
-  "bugs": { "url": "https://github.com/NickTacke/postnl-client/issues" },
-  "keywords": ["postnl", "shipping", "logistics", "api-client", "tracking", "labels"],
-  "engines": { "node": ">=18" },
+  "bugs": {
+    "url": "https://github.com/NickTacke/postnl-client/issues"
+  },
+  "keywords": [
+    "postnl",
+    "shipping",
+    "logistics",
+    "api-client",
+    "tracking",
+    "labels"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "sideEffects": false,
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -21,7 +35,11 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup",
     "test": "bun test",
@@ -33,7 +51,9 @@
     "prepublishOnly": "bun run check && bun run build",
     "release": "changeset publish"
   },
-  "dependencies": { "zod": "^3.24.0" },
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
     "@changesets/cli": "^2.27.0",
