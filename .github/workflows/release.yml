@@ -19,7 +19,8 @@ jobs:
       # trusted publishing (no npm_token) when that pr is merged
       - uses: changesets/action@v1
         with:
-          version: bunx changeset version
+          # reformat package.json after the version bump so biome stays happy
+          version: bunx changeset version && bunx biome format --write package.json
           publish: bunx changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
