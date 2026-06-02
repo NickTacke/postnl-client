@@ -8,13 +8,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+      # node 22 + npm >= 11.5.1 are required for npm oidc trusted publishing
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+      - run: npm install -g npm@latest
       - run: bun install --frozen-lockfile
-      # opens a "Version Packages" pr from pending changesets, and publishes to npm
-      # when that pr is merged. requires an NPM_TOKEN repo secret.
+      # opens a "version packages" pr from pending changesets; publishes via oidc
+      # trusted publishing (no npm_token) when that pr is merged
       - uses: changesets/action@v1
         with:
           version: bunx changeset version
           publish: bunx changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
