@@ -50,8 +50,8 @@ describe("timeframe.get", () => {
         Timeframe: {
           Date: "30-06-2022",
           Timeframes: {
-            // single TimeframeTimeframe object (not array)
-            TimeframeTimeframe: {
+            // single TimeframeTimeFrame object (not array); live wire key has capital F
+            TimeframeTimeFrame: {
               From: "12:30:00",
               To: "14:30:00",
               Options: { string: "Daytime" },

@@ -1,6 +1,6 @@
 import type { z } from "zod";
 import { ENDPOINTS, type OperationKey } from "./endpoints";
-import { PostNLValidationError } from "./errors";
+import { PostNLValidationError, inlineApiError } from "./errors";
 import type { Transport } from "./http";
 
 export interface CallArgs<TReq, TRes> {
@@ -34,6 +34,8 @@ export abstract class BaseResource {
       query: args.query,
       body: ep.method === "GET" ? undefined : body,
     });
+    const inline = inlineApiError(raw);
+    if (inline) throw inline;
     const out = args.responseSchema.safeParse(raw);
     if (!out.success) throw new PostNLValidationError("invalid response", out.error.issues);
     return out.data;

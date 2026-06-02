@@ -150,3 +150,22 @@ describe("location.lookup", () => {
     expect(url(fetchMock)).toContain("/shipment/v2_1/locations/lookup?LocationCode=163043");
   });
 });
+
+describe("location.lookup inline-error handling", () => {
+  it("throws on a http-200 {Error:{ErrorCode,ErrorMessage}} body instead of swallowing it", async () => {
+    const fetchMock = mock(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            Date: "2026-06-02T13:32:41Z",
+            Error: { ErrorCode: "0010", ErrorMessage: "No results found." },
+            RequestId: "abc",
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        ),
+      ),
+    );
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    await expect(c.location.lookup({ locationCode: 161503 })).rejects.toThrow(/no results found/i);
+  });
+});

@@ -65,10 +65,16 @@ function extract(body: unknown): Parsed {
         code: fault.detail?.errorcode,
         detail: fault,
       };
-    // legacy InvalidRequest
-    const inv = b.Error as { ErrorCode?: string; ErrorDescription?: string } | undefined;
-    if (inv?.ErrorDescription)
-      return { message: inv.ErrorDescription, code: inv.ErrorCode, detail: b };
+    // legacy InvalidRequest / cif inline error (live api uses ErrorMessage, sdk docs said ErrorDescription)
+    const inv = b.Error as
+      | { ErrorCode?: string; ErrorMessage?: string; ErrorDescription?: string }
+      | undefined;
+    if (inv && (inv.ErrorMessage || inv.ErrorDescription))
+      return {
+        message: inv.ErrorMessage ?? inv.ErrorDescription ?? "error",
+        code: inv.ErrorCode,
+        detail: b,
+      };
     // error lists: barcode {ErrorMsg,ErrorNumber} | labelling {Error,Code} | postalcode {title,detail}
     const list = (b.errors ?? b.Errors) as unknown;
     if (Array.isArray(list) && list.length) {
@@ -108,4 +114,17 @@ export function parseError(
   if (status >= 500) return new PostNLServerError(status, message, code, detail, body);
   if (status === 400) return new PostNLBadRequestError(status, message, code, detail, body);
   return new PostNLApiError(status, message, code, detail, body);
+}
+
+// some delivery-options gets return http 200 with an inline {Error:{ErrorCode,ErrorMessage}} body
+// instead of an error status; surface it instead of letting the success schema swallow it
+export function inlineApiError(body: unknown): PostNLApiError | undefined {
+  const b = body as Record<string, unknown> | null;
+  const err =
+    b && typeof b === "object" ? (b.Error as { ErrorCode?: unknown } | undefined) : undefined;
+  if (err && typeof err === "object" && err.ErrorCode != null) {
+    const { message, code, detail } = extract(body);
+    return new PostNLApiError(200, message, code, detail, body);
+  }
+  return undefined;
 }
