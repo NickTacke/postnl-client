@@ -38,6 +38,9 @@ export type Positioning = (typeof Positioning)[number];
 export const PrintMethod = ["consumerPrint", "retailPrint"] as const;
 export type PrintMethod = (typeof PrintMethod)[number];
 
+export const LabelType = ["labelinthebox"] as const;
+export type LabelType = (typeof LabelType)[number];
+
 export const ReturnPeriod = [35, 100, 200, 365] as const;
 export type ReturnPeriod = (typeof ReturnPeriod)[number];
 
