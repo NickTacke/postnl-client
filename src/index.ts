@@ -24,6 +24,18 @@ export type {
 export { TimeframeResource } from "./resources/timeframe";
 export type { TimeframeGetInput } from "./resources/timeframe";
 export type { TimeframeResponse } from "./resources/timeframe/schema";
+export { LocationResource } from "./resources/location";
+export type {
+  LocationNearestInput,
+  LocationNearestByGeocodeInput,
+  LocationAreaInput,
+  LocationLookupInput,
+} from "./resources/location";
+export type {
+  Location,
+  LocationsResponse,
+  LocationLookupResponse,
+} from "./resources/location/schema";
 export type {
   TrackingOptions,
   TrackingByReferenceOptions,

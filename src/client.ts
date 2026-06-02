@@ -2,6 +2,7 @@ import { type PostNLClientOptions, resolveConfig } from "./config";
 import { Transport } from "./core/http";
 import { BarcodeResource } from "./resources/barcode";
 import { DeliveryDateResource } from "./resources/delivery-date";
+import { LocationResource } from "./resources/location";
 import { ReturnResource } from "./resources/return";
 import { ShippingResource } from "./resources/shipping";
 import { TimeframeResource } from "./resources/timeframe";
@@ -15,6 +16,7 @@ export class PostNLClient {
   readonly tracking: TrackingResource;
   readonly deliveryDate: DeliveryDateResource;
   readonly timeframe: TimeframeResource;
+  readonly location: LocationResource;
 
   constructor(options: PostNLClientOptions) {
     this.transport = new Transport(resolveConfig(options));
@@ -24,5 +26,6 @@ export class PostNLClient {
     this.tracking = new TrackingResource(this.transport);
     this.deliveryDate = new DeliveryDateResource(this.transport);
     this.timeframe = new TimeframeResource(this.transport);
+    this.location = new LocationResource(this.transport);
   }
 }
