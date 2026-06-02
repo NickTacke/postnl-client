@@ -107,3 +107,46 @@ describe("shipping.legacy.label", () => {
     expect(out.responseShipments[0]?.warnings?.[0]?.code).toBe("01");
   });
 });
+
+describe("shipping.legacy.confirm", () => {
+  it("posts to v2/confirm and returns responseShipments with barcode and warnings", async () => {
+    const fetchMock = mockFetch(200, {
+      ConfirmingResponseShipments: undefined,
+      ResponseShipments: [
+        {
+          Barcode: "3SDEVC1234567",
+          Warnings: [{ Code: "02", Description: "ok" }],
+        },
+      ],
+    });
+    const client = new PostNLClient({
+      apiKey: "k",
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+    const out = await client.shipping.legacy.confirm({
+      customer: { customerCode: "DEVC", customerNumber: "11223344" },
+      message: { messageId: "1" },
+      shipments: [
+        {
+          addresses: [{ addressType: "01", countrycode: "NL", city: "Utrecht" }],
+          barcode: "3SDEVC1234567",
+          dimension: { weight: 2000 },
+          productCodeDelivery: "3085",
+        },
+      ],
+    });
+
+    const req = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(req[0]).toContain("/shipment/v2/confirm");
+    expect(req[1].method).toBe("POST");
+    const sentBody = JSON.parse(req[1].body as string);
+    expect(sentBody.Customer.CustomerCode).toBe("DEVC");
+    expect(sentBody.Shipments[0].Barcode).toBe("3SDEVC1234567");
+
+    expect(out).toEqual({
+      responseShipments: [
+        { barcode: "3SDEVC1234567", warnings: [{ code: "02", description: "ok" }] },
+      ],
+    });
+  });
+});
