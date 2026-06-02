@@ -20,14 +20,15 @@ const timeframeTimeframeSchema = z
     }),
   );
 
-// Timeframe { Date, Timeframes.TimeframeTimeframe[] (single-or-array) }
+// Timeframe { Date, Timeframes.TimeframeTimeFrame[] (single-or-array) }
+// note: live wire key is TimeframeTimeFrame (capital F), not TimeframeTimeframe
 const timeframeSchema = z
   .object({
     Date: pnlDateField,
     Timeframes: z
-      .object({ TimeframeTimeframe: pnlArray(timeframeTimeframeSchema) })
+      .object({ TimeframeTimeFrame: pnlArray(timeframeTimeframeSchema) })
       .optional()
-      .transform((t) => t?.TimeframeTimeframe ?? []),
+      .transform((t) => t?.TimeframeTimeFrame ?? []),
   })
   .transform((t) => ({
     ...stripUndefined({ date: t.Date }),

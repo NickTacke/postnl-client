@@ -5,6 +5,7 @@ import {
   PostNLBadRequestError,
   PostNLRateLimitError,
   PostNLServerError,
+  inlineApiError,
   parseError,
 } from "../../src/core/errors";
 
@@ -23,6 +24,16 @@ describe("parseError", () => {
     const err = parseError(500, { fault: { faultstring: "boom", detail: { errorcode: "X1" } } });
     expect(err).toBeInstanceOf(PostNLServerError);
     expect(err.code).toBe("X1");
+  });
+  it("cif inline Error envelope reads ErrorMessage (live api field, not ErrorDescription)", () => {
+    const err = parseError(400, {
+      Date: "2026-06-02T13:32:41Z",
+      Error: { ErrorCode: "0010", ErrorMessage: "No results found." },
+      RequestId: "abc",
+    });
+    expect(err).toBeInstanceOf(PostNLBadRequestError);
+    expect(err.message).toBe("No results found.");
+    expect(err.code).toBe("0010");
   });
   it("legacy barcode errors[] -> bad request", () => {
     const err = parseError(400, { errors: [{ ErrorMsg: "bad serie", ErrorNumber: "11" }] });
@@ -54,5 +65,23 @@ describe("parseError", () => {
     const err = parseError(418, { weird: true });
     expect(err).toBeInstanceOf(PostNLApiError);
     expect(err.status).toBe(418);
+  });
+});
+
+describe("inlineApiError", () => {
+  it("detects a http-200 inline Error envelope", () => {
+    const err = inlineApiError({
+      Date: "2026-06-02T13:32:41Z",
+      Error: { ErrorCode: "0010", ErrorMessage: "No results found." },
+      RequestId: "abc",
+    });
+    expect(err).toBeInstanceOf(PostNLApiError);
+    expect(err?.message).toBe("No results found.");
+    expect(err?.code).toBe("0010");
+  });
+  it("returns undefined for a normal success body", () => {
+    expect(inlineApiError({ GetLocationsResult: { ResponseLocation: [] } })).toBeUndefined();
+    expect(inlineApiError({ DeliveryDate: "04-06-2026" })).toBeUndefined();
+    expect(inlineApiError(undefined)).toBeUndefined();
   });
 });
