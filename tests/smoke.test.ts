@@ -1,9 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import { version } from "../src/index";
+import { PostNLClient } from "../src/index";
 
-// baseline smoke test; package keeps a version export
+// baseline smoke test; the package exposes a constructable client
 describe("package", () => {
-  it("exposes version", () => {
-    expect(version).toBe("0.1.0");
+  it("exports PostNLClient", () => {
+    expect(typeof PostNLClient).toBe("function");
+    expect(new PostNLClient({ apiKey: "k" })).toBeInstanceOf(PostNLClient);
   });
 });

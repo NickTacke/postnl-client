@@ -80,10 +80,11 @@ function extract(body: unknown): Parsed {
     const list = (b.errors ?? b.Errors) as unknown;
     if (Array.isArray(list) && list.length) {
       const f = list[0] as Record<string, unknown>;
+      // prefer the specific Description (labelling puts the actionable detail there, Error is generic)
       const msg = (f.ErrorMsg ??
+        f.Description ??
         f.Error ??
         f.title ??
-        f.Description ??
         f.detail ??
         "error") as string;
       const code = (f.ErrorNumber ?? f.Code ?? f.status) as string | undefined;
