@@ -79,6 +79,12 @@ describe("inlineApiError", () => {
     expect(err?.message).toBe("No results found.");
     expect(err?.code).toBe("0010");
   });
+  it("keeps the code when an inline Error has ErrorCode but no message", () => {
+    const err = inlineApiError({ Error: { ErrorCode: "0010" } });
+    expect(err).toBeInstanceOf(PostNLApiError);
+    expect(err?.code).toBe("0010");
+    expect(err?.message).toBe("error");
+  });
   it("returns undefined for a normal success body", () => {
     expect(inlineApiError({ GetLocationsResult: { ResponseLocation: [] } })).toBeUndefined();
     expect(inlineApiError({ DeliveryDate: "04-06-2026" })).toBeUndefined();

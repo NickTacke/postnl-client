@@ -69,7 +69,8 @@ function extract(body: unknown): Parsed {
     const inv = b.Error as
       | { ErrorCode?: string; ErrorMessage?: string; ErrorDescription?: string }
       | undefined;
-    if (inv && (inv.ErrorMessage || inv.ErrorDescription))
+    // fire on code OR message so a code-only error still carries its code (matches inlineApiError)
+    if (inv && (inv.ErrorMessage || inv.ErrorDescription || inv.ErrorCode))
       return {
         message: inv.ErrorMessage ?? inv.ErrorDescription ?? "error",
         code: inv.ErrorCode,
