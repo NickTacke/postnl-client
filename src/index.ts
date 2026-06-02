@@ -5,3 +5,5 @@ export type { PostNLClientOptions } from "./config";
 export * from "./core/errors";
 export { decodeBase64, labelContentType, toDecodedLabel } from "./core/base64";
 export type { DecodedLabel } from "./core/base64";
+export * from "./constants/enums";
+export * from "./constants/product";
