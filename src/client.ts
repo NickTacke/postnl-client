@@ -1,6 +1,7 @@
 import { type PostNLClientOptions, resolveConfig } from "./config";
 import { Transport } from "./core/http";
 import { BarcodeResource } from "./resources/barcode";
+import { DeliveryDateResource } from "./resources/delivery-date";
 import { ReturnResource } from "./resources/return";
 import { ShippingResource } from "./resources/shipping";
 import { TrackingResource } from "./resources/tracking";
@@ -11,6 +12,7 @@ export class PostNLClient {
   readonly shipping: ShippingResource;
   readonly return: ReturnResource;
   readonly tracking: TrackingResource;
+  readonly deliveryDate: DeliveryDateResource;
 
   constructor(options: PostNLClientOptions) {
     this.transport = new Transport(resolveConfig(options));
@@ -18,5 +20,6 @@ export class PostNLClient {
     this.shipping = new ShippingResource(this.transport);
     this.return = new ReturnResource(this.transport);
     this.tracking = new TrackingResource(this.transport);
+    this.deliveryDate = new DeliveryDateResource(this.transport);
   }
 }

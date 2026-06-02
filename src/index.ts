@@ -12,6 +12,15 @@ export { BarcodeResource } from "./resources/barcode";
 export { ShippingResource } from "./resources/shipping";
 export { ReturnResource } from "./resources/return";
 export { TrackingResource } from "./resources/tracking";
+export { DeliveryDateResource } from "./resources/delivery-date";
+export type {
+  DeliveryDateCalculateInput,
+  SentDateInput,
+} from "./resources/delivery-date";
+export type {
+  DeliveryDateResponse,
+  SentDateResponse,
+} from "./resources/delivery-date/schema";
 export type {
   TrackingOptions,
   TrackingByReferenceOptions,
