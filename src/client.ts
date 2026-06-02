@@ -1,5 +1,6 @@
 import { type PostNLClientOptions, resolveConfig } from "./config";
 import { Transport } from "./core/http";
+import { AddressResource } from "./resources/address";
 import { BarcodeResource } from "./resources/barcode";
 import { CheckoutResource } from "./resources/checkout";
 import { DeliveryDateResource } from "./resources/delivery-date";
@@ -19,9 +20,11 @@ export class PostNLClient {
   readonly timeframe: TimeframeResource;
   readonly location: LocationResource;
   readonly checkout: CheckoutResource;
+  readonly address: AddressResource;
 
   constructor(options: PostNLClientOptions) {
-    this.transport = new Transport(resolveConfig(options));
+    const config = resolveConfig(options);
+    this.transport = new Transport(config);
     this.barcode = new BarcodeResource(this.transport);
     this.shipping = new ShippingResource(this.transport);
     this.return = new ReturnResource(this.transport);
@@ -30,5 +33,6 @@ export class PostNLClient {
     this.timeframe = new TimeframeResource(this.transport);
     this.location = new LocationResource(this.transport);
     this.checkout = new CheckoutResource(this.transport);
+    this.address = new AddressResource(this.transport, config.environment);
   }
 }

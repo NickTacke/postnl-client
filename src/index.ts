@@ -71,3 +71,6 @@ export type {
   ConfirmingResponse,
 } from "./resources/shipping/legacy-schema";
 export type { LabelLegacyOptions } from "./resources/shipping/legacy";
+export { AddressResource } from "./resources/address";
+export type { AddressCheckInput } from "./resources/address";
+export type { PostalcodeCheckAddress } from "./resources/address/schema";
