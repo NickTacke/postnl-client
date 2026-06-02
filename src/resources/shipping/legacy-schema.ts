@@ -7,12 +7,15 @@ import { pnlArray } from "../../core/codec/helpers";
 // legacy send requests use native types + PascalCase wire keys.
 // public api is camelCase in; each schema .transform()s to the wire shape.
 // undefined wire keys are stripped so exactOptionalPropertyTypes stays happy downstream.
-const stripUndefined = <T extends Record<string, unknown>>(obj: T): T => {
+// drops undefined keys so output types model them as optional (matches stripped runtime shape)
+const stripUndefined = <T extends Record<string, unknown>>(
+  obj: T,
+): { [K in keyof T]?: Exclude<T[K], undefined> } => {
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(obj)) {
     if (v !== undefined) out[k] = v;
   }
-  return out as T;
+  return out as { [K in keyof T]?: Exclude<T[K], undefined> };
 };
 
 // MessageTimeStamp is dd-MM-yyyy HH:mm:ss; accept a Date or pre-formatted string, default now
@@ -399,15 +402,15 @@ const labellingResponseShipmentSchema = z
     Errors: pnlArray(errorSchema),
     Warnings: pnlArray(warningSchema),
   })
-  .transform((s) =>
-    stripUndefined({
+  .transform((s) => ({
+    labels: s.Labels,
+    ...stripUndefined({
       productCodeDelivery: s.ProductCodeDelivery,
       barcode: s.Barcode,
-      labels: s.Labels,
       errors: s.Errors.length ? s.Errors : undefined,
       warnings: s.Warnings.length ? s.Warnings : undefined,
     }),
-  );
+  }));
 
 const legacyMergedLabelSchema = z
   .object({ Barcodes: pnlArray(z.string()), Labels: pnlArray(legacyLabelSchema) })
@@ -419,12 +422,10 @@ export const labellingResponseSchema = z
     MergedLabels: pnlArray(legacyMergedLabelSchema),
     ResponseShipments: pnlArray(labellingResponseShipmentSchema),
   })
-  .transform((r) =>
-    stripUndefined({
-      mergedLabels: r.MergedLabels.length ? r.MergedLabels : undefined,
-      responseShipments: r.ResponseShipments,
-    }),
-  );
+  .transform((r) => ({
+    responseShipments: r.ResponseShipments,
+    ...(r.MergedLabels.length ? { mergedLabels: r.MergedLabels } : {}),
+  }));
 export type LabellingResponse = z.infer<typeof labellingResponseSchema>;
 
 // ConfirmingResponseShipment
