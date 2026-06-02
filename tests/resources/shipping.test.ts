@@ -1,5 +1,7 @@
 import { describe, expect, it, mock } from "bun:test";
+import { PostNLValidationError } from "../../src/core/errors";
 import { PostNLClient } from "../../src/index";
+import { isoDate } from "../../src/resources/shipping/schema";
 
 const f = (body: unknown) =>
   mock(() =>
@@ -71,5 +73,32 @@ describe("shipping v4", () => {
     const req = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     const body = JSON.parse(req[1].body as string);
     expect(body.handOverDate).toBe("2026-06-02");
+  });
+
+  it("rejects an invalid handOverDate Date", async () => {
+    const fetchMock = f({ items: [{ barcode: "3SX" }] });
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    await expect(
+      c.shipping.create({ ...input, handOverDate: new Date("nope") }),
+    ).rejects.toBeInstanceOf(PostNLValidationError);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("isoDate schema", () => {
+  it("formats a valid Date to yyyy-MM-dd", () => {
+    expect(isoDate.parse(new Date(2026, 5, 2))).toBe("2026-06-02");
+  });
+
+  it("rejects an invalid Date", () => {
+    expect(isoDate.safeParse(new Date("nope")).success).toBe(false);
+  });
+
+  it("rejects a malformed bare string", () => {
+    expect(isoDate.safeParse("2026/06/02").success).toBe(false);
+  });
+
+  it("accepts a valid bare string passthrough", () => {
+    expect(isoDate.parse("2026-06-02")).toBe("2026-06-02");
   });
 });

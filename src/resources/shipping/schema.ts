@@ -18,8 +18,12 @@ import {
 import { toDecodedLabel } from "../../core/base64";
 import { formatIsoDate } from "../../core/codec/dates";
 
-// v4 dates are iso yyyy-MM-dd. accept a js date (format it) or a bare string passthrough
-export const isoDate = z.preprocess((v) => (v instanceof Date ? formatIsoDate(v) : v), z.string());
+// v4 dates are iso yyyy-MM-dd. accept a js date (format it, but not an invalid one) or a bare
+// string passthrough. invalid dates / malformed strings fail the shape check below.
+export const isoDate = z.preprocess(
+  (v) => (v instanceof Date ? (Number.isNaN(v.getTime()) ? v : formatIsoDate(v)) : v),
+  z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+);
 
 // nested address building blocks (AddressPNPShipmentConfirm + InternationalAddressData)
 export const internationalAddressDataSchema = z.object({
