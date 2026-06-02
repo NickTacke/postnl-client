@@ -62,6 +62,15 @@ describe("tracking.byBarcode", () => {
     expect(out.warnings[0]?.message).toBe("heads up");
   });
 
+  it("accepts a null date value and normalizes it to undefined", async () => {
+    const fetchMock = mockFetch(200, {
+      CurrentStatus: { Shipment: { Barcode: "3SX", DeliveryDate: null } },
+    });
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    const out = await c.tracking.byBarcode("3SX");
+    expect(out.currentStatus?.deliveryDate).toBeUndefined();
+  });
+
   it("unwraps ProductOptions single-object wrapper", async () => {
     const fetchMock = mockFetch(200, {
       CurrentStatus: {

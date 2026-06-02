@@ -12,7 +12,7 @@ import { stripUndefined } from "../../core/codec/object";
 // dd-MM-yyyy[ HH:mm:ss] and iso yyyy-MM-dd are handled; anything else stays raw.
 const pnlDate = z
   .string()
-  .optional()
+  .nullish()
   .transform((v): PnlDate | undefined => {
     if (v == null) return undefined;
     try {
