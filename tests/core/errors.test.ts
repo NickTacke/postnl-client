@@ -30,7 +30,7 @@ describe("parseError", () => {
     expect(err.message).toContain("bad serie");
     expect(err.code).toBe("11");
   });
-  it("v4 rfc9457 -> bad request", () => {
+  it("v4 rfc9457 with errors object map -> title branch (not error-list)", () => {
     const err = parseError(400, {
       type: "x",
       title: "Validation failed",
@@ -39,7 +39,9 @@ describe("parseError", () => {
       traceId: "t",
     });
     expect(err).toBeInstanceOf(PostNLBadRequestError);
-    expect(err.message).toContain("Validation failed");
+    expect(err.message).toBe("Validation failed");
+    // title branch sets code from `type`; error-list branch would not
+    expect(err.code).toBe("x");
   });
   it("postalcode errors[] -> bad request", () => {
     const err = parseError(400, {
