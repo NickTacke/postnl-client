@@ -9,7 +9,8 @@ export interface CallArgs<TReq, TRes> {
   query?: Record<string, string | string[] | number | boolean | undefined>;
   input?: TReq;
   requestSchema?: z.ZodType<unknown, z.ZodTypeDef, TReq>;
-  responseSchema: z.ZodType<TRes>;
+  // input is unknown wire json; output is the cleaned TRes (schemas may transform/default)
+  responseSchema: z.ZodType<TRes, z.ZodTypeDef, unknown>;
 }
 
 export abstract class BaseResource {
