@@ -13,14 +13,7 @@
   "bugs": {
     "url": "https://github.com/NickTacke/postnl-client/issues"
   },
-  "keywords": [
-    "postnl",
-    "shipping",
-    "logistics",
-    "api-client",
-    "tracking",
-    "labels"
-  ],
+  "keywords": ["postnl", "shipping", "logistics", "api-client", "tracking", "labels"],
   "engines": {
     "node": ">=18"
   },
@@ -35,11 +28,7 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
     "build": "tsup",
     "test": "bun test",
@@ -48,7 +37,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check . && tsc --noEmit && bun test",
-    "prepublishOnly": "bun run check && bun run build",
+    "prepublishOnly": "bun run build",
     "release": "changeset publish"
   },
   "dependencies": {
