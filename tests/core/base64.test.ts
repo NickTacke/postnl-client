@@ -6,6 +6,12 @@ describe("base64 helpers", () => {
     const bytes = decodeBase64(btoa("hello"));
     expect(new TextDecoder().decode(bytes)).toBe("hello");
   });
+  it("round-trips arbitrary binary bytes", () => {
+    const src = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) src[i] = i;
+    const b64 = btoa(String.fromCharCode(...src));
+    expect([...decodeBase64(b64)]).toEqual([...src]);
+  });
   it("maps output types to content types", () => {
     expect(labelContentType("pdf")).toBe("application/pdf");
     expect(labelContentType("gif")).toBe("image/gif");

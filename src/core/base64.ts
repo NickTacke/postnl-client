@@ -1,5 +1,8 @@
-// label/signature content is base64. runtime-agnostic decode (atob exists in node18+, bun, deno, workers)
+// label/signature content is base64. native fromBase64 when present (node22+/bun/deno), atob fallback for node18/20
 export function decodeBase64(b64: string): Uint8Array {
+  const fromBase64 = (Uint8Array as unknown as { fromBase64?: (s: string) => Uint8Array })
+    .fromBase64;
+  if (fromBase64) return fromBase64(b64);
   const bin = atob(b64);
   const out = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
