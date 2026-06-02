@@ -109,12 +109,13 @@ describe("tracking.signature", () => {
   it("unwraps signature Warnings.Warning wrapper", async () => {
     const fetchMock = mockFetch(200, {
       Signature: { Barcode: "3SX" },
-      Warnings: { Warning: { Code: "1", Description: "warn" } },
+      Warnings: { Warning: { Message: "warn", Code: "1" } },
     });
     const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
     const out = await c.tracking.signature("3SX");
     expect(out.warnings).toHaveLength(1);
-    expect(out.warnings[0]?.description).toBe("warn");
+    expect(out.warnings[0]?.message).toBe("warn");
+    expect(out.warnings[0]?.code).toBe("1");
   });
 });
 

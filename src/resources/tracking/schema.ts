@@ -1,28 +1,19 @@
 import { z } from "zod";
 import { type DecodedLabel, toDecodedLabel } from "../../core/base64";
-import { parsePnlDate } from "../../core/codec/dates";
+import { type PnlDate, parsePnlDate } from "../../core/codec/dates";
 import { pnlArray, pnlNum } from "../../core/codec/helpers";
+import { stripUndefined } from "../../core/codec/object";
 
 // shipping-status responses are pascalcase, stringify numbers, and use
 // single-object-or-array + single-object wrappers. each schema .transform()s
-// to a clean camelCase output. drops undefined keys to satisfy
-// exactOptionalPropertyTypes downstream.
-const stripUndefined = <T extends Record<string, unknown>>(
-  obj: T,
-): { [K in keyof T]?: Exclude<T[K], undefined> } => {
-  const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(obj)) {
-    if (v !== undefined) out[k] = v;
-  }
-  return out as { [K in keyof T]?: Exclude<T[K], undefined> };
-};
+// to a clean camelCase output.
 
 // lenient date parse: try parsePnlDate, keep raw string when format is unknown.
 // dd-MM-yyyy[ HH:mm:ss] and iso yyyy-MM-dd are handled; anything else stays raw.
 const pnlDate = z
   .string()
   .optional()
-  .transform((v): Date | string | undefined => {
+  .transform((v): PnlDate | undefined => {
     if (v == null) return undefined;
     try {
       return parsePnlDate(v);
@@ -254,10 +245,6 @@ export type ShippingStatusResponse = z.infer<typeof shippingStatusResponseSchema
 
 // ---------- signature ----------
 
-const signatureWarningSchema = z
-  .object({ Code: z.string().optional(), Description: z.string().optional() })
-  .transform((w) => stripUndefined({ code: w.Code, description: w.Description }));
-
 const signatureSchema = z
   .object({
     Barcode: z.string().optional(),
@@ -277,7 +264,7 @@ export const signatureResponseSchema = z
     Signature: signatureSchema.optional(),
     // signature Warnings is a single-object wrapper { Warning: {...} }; unwrap to a 1-element array
     Warnings: z
-      .object({ Warning: pnlArray(signatureWarningSchema) })
+      .object({ Warning: pnlArray(warningSchema) })
       .optional()
       .transform((w) => w?.Warning ?? []),
   })
