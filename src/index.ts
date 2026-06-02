@@ -36,6 +36,13 @@ export type {
   LocationsResponse,
   LocationLookupResponse,
 } from "./resources/location/schema";
+export { CheckoutResource } from "./resources/checkout";
+export type {
+  CheckoutRequestInput,
+  CheckoutCutOffTimeInput,
+  CheckoutAddressInput,
+  CheckoutResponse,
+} from "./resources/checkout/schema";
 export type {
   TrackingOptions,
   TrackingByReferenceOptions,
