@@ -20,3 +20,10 @@ export type {
   ShipmentPostResponse,
 } from "./resources/shipping/schema";
 export type { ReturnGenerateRequest } from "./resources/return/schema";
+export type {
+  LabellingRequest,
+  LabellingResponse,
+  ConfirmingRequest,
+  ConfirmingResponse,
+} from "./resources/shipping/legacy-schema";
+export type { LabelLegacyOptions } from "./resources/shipping/legacy";
