@@ -21,6 +21,7 @@ Requires Node 18+ (or Bun / Deno / any runtime with global `fetch` and `atob`). 
 ## Quick start
 
 ```ts
+import { writeFileSync } from "node:fs";
 import { PostNLClient } from "postnl-client";
 
 const client = new PostNLClient({
@@ -46,7 +47,8 @@ const result = await client.shipping.create({
 const item = result.items[0];
 console.log(item?.barcode);
 const label = item?.labels?.[0];
-if (label) await Bun.write("label.pdf", label.bytes());
+// label.bytes() is a Uint8Array; works in node, bun, and deno
+if (label) writeFileSync("label.pdf", label.bytes());
 ```
 
 See [`examples/`](./examples) for runnable scripts (`create-shipment.ts`, `track.ts`, `nearest-locations.ts`).
