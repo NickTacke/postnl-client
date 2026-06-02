@@ -3,17 +3,20 @@ import { Transport } from "./core/http";
 import { BarcodeResource } from "./resources/barcode";
 import { ReturnResource } from "./resources/return";
 import { ShippingResource } from "./resources/shipping";
+import { TrackingResource } from "./resources/tracking";
 
 export class PostNLClient {
   private readonly transport: Transport;
   readonly barcode: BarcodeResource;
   readonly shipping: ShippingResource;
   readonly return: ReturnResource;
+  readonly tracking: TrackingResource;
 
   constructor(options: PostNLClientOptions) {
     this.transport = new Transport(resolveConfig(options));
     this.barcode = new BarcodeResource(this.transport);
     this.shipping = new ShippingResource(this.transport);
     this.return = new ReturnResource(this.transport);
+    this.tracking = new TrackingResource(this.transport);
   }
 }

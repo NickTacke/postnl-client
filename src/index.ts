@@ -11,6 +11,19 @@ export * from "./constants/product";
 export { BarcodeResource } from "./resources/barcode";
 export { ShippingResource } from "./resources/shipping";
 export { ReturnResource } from "./resources/return";
+export { TrackingResource } from "./resources/tracking";
+export type {
+  TrackingOptions,
+  TrackingByReferenceOptions,
+  UpdatedShipmentsOptions,
+} from "./resources/tracking";
+export type {
+  ShippingStatusResponse,
+  SignatureResponse,
+  SignatureImage,
+  UpdatedShipmentsResponse,
+  UpdatedShipment,
+} from "./resources/tracking/schema";
 export type { BarcodeV4Request, BarcodeV4Response } from "./resources/barcode/schema";
 export type { BarcodeLegacyInput } from "./resources/barcode/legacy";
 export type {
