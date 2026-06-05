@@ -55,6 +55,19 @@ interface Parsed {
 }
 
 function extract(body: unknown): Parsed {
+  // v4 validation errors can arrive as a bare array of fault envelopes
+  // ([{fault:{faultstring,detail:{errorcode}}}, ...]); surface the first, count the rest
+  if (Array.isArray(body) && body.length) {
+    const first = body[0] as { fault?: { faultstring?: string; detail?: { errorcode?: string } } };
+    if (first?.fault) {
+      const extra = body.length > 1 ? ` (+${body.length - 1} more)` : "";
+      return {
+        message: `${first.fault.faultstring ?? "fault"}${extra}`,
+        code: first.fault.detail?.errorcode,
+        detail: body,
+      };
+    }
+  }
   const b = body as Record<string, unknown> | null;
   if (b && typeof b === "object") {
     // fault envelope

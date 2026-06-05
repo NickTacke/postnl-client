@@ -1,6 +1,6 @@
 {
   "name": "postnl-client",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "description": "typescript client for the postnl ecommerce api (v4-first, legacy supported)",
   "type": "module",
   "license": "MIT",

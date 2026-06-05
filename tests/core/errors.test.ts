@@ -75,6 +75,25 @@ describe("parseError", () => {
     expect(err).toBeInstanceOf(PostNLBadRequestError);
     expect(err.message).toContain("Bad request");
   });
+  it("v4 array of fault envelopes -> first faultstring + code + count", () => {
+    const err = parseError(400, [
+      {
+        fault: {
+          faultstring: "customerCode value is required in request body",
+          detail: { errorcode: "Validation Fault" },
+        },
+      },
+      {
+        fault: {
+          faultstring: "customerNumber value is required in request body",
+          detail: { errorcode: "Validation Fault" },
+        },
+      },
+    ]);
+    expect(err).toBeInstanceOf(PostNLBadRequestError);
+    expect(err.message).toBe("customerCode value is required in request body (+1 more)");
+    expect(err.code).toBe("Validation Fault");
+  });
   it("unknown shape still yields api error", () => {
     const err = parseError(418, { weird: true });
     expect(err).toBeInstanceOf(PostNLApiError);

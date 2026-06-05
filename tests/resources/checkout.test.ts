@@ -73,6 +73,8 @@ describe("checkout.get", () => {
           DeliveryDate: "07-07-2019",
           Timeframe: [
             { From: "18:00:00", To: "22:30:00", ShippingDate: "06-07-2019", Options: ["Daytime"] },
+            // live sandbox returns null ShippingDate
+            { From: "09:00:00", To: "11:30:00", ShippingDate: null, Options: ["Daytime"] },
           ],
         },
       ],
@@ -91,7 +93,8 @@ describe("checkout.get", () => {
           ],
         },
       ],
-      Warnings: [{ Code: "5034", Description: "No delivery option found", Options: "Daytime" }],
+      // live returns Options as an array
+      Warnings: [{ Code: "5034", Description: "No delivery option found", Options: ["Daytime"] }],
     });
     const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
     const out = await c.checkout.get(input);
@@ -105,5 +108,6 @@ describe("checkout.get", () => {
       to: "18:00",
     });
     expect(out.warnings[0]?.code).toBe("5034");
+    expect(out.warnings[0]?.options).toEqual(["Daytime"]);
   });
 });
