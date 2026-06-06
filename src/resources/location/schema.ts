@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { IGNORED_LOCATION_OPTIONS } from "../../constants/enums";
 import { sustainabilitySchema } from "../../core/codec/fields";
-import { pnlArray, pnlNum, pnlStringWrapped } from "../../core/codec/helpers";
+import { pnlArray, pnlNum } from "../../core/codec/helpers";
 import { stripUndefined } from "../../core/codec/object";
 
 const IGNORED = new Set<string>(IGNORED_LOCATION_OPTIONS);
@@ -29,8 +29,8 @@ const addressSchema = z
     }),
   );
 
-// each day is the {string:"08:00-18:00"} wrapper
-const day = pnlStringWrapped(z.string()).optional();
+// each day is {string:"08:00-18:00"} or {string:["09:15-12:30","13:00-18:00"]} (split hours)
+const day = pnlArray(z.string()).optional();
 
 const openingHoursSchema = z
   .object({

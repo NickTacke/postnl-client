@@ -2,10 +2,10 @@ import { z } from "zod";
 import { parsePnlDate } from "./dates";
 import { stripUndefined } from "./object";
 
-// optional dd-MM-yyyy response date -> Date (null-tolerant)
+// optional dd-MM-yyyy response date -> Date (null-tolerant; postnl sends null)
 export const pnlDateField = z
   .string()
-  .optional()
+  .nullish()
   .transform((v) => (v == null ? undefined : parsePnlDate(v)));
 
 // sustainability { Code, Description } -> { code, description }

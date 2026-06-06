@@ -71,6 +71,18 @@ describe("tracking.byBarcode", () => {
     expect(out.currentStatus?.deliveryDate).toBeUndefined();
   });
 
+  it("accepts an empty CurrentStatus (no shipment found) with warnings", async () => {
+    // live shape for a not-yet-scanned barcode: { CurrentStatus: {}, Warnings: [...] }
+    const fetchMock = mockFetch(200, {
+      CurrentStatus: {},
+      Warnings: [{ Message: "No shipment found", Code: "2" }],
+    });
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    const out = await c.tracking.byBarcode("3SX");
+    expect(out.currentStatus).toBeUndefined();
+    expect(out.warnings[0]?.message).toBe("No shipment found");
+  });
+
   it("unwraps ProductOptions single-object wrapper", async () => {
     const fetchMock = mockFetch(200, {
       CurrentStatus: {
@@ -113,6 +125,20 @@ describe("tracking.signature", () => {
     expect(url(fetchMock)).toContain("/shipment/v2/status/signature/3SX");
     expect(out.signature?.signatureImage?.contentType).toBe("image/gif");
     expect(new TextDecoder().decode(out.signature?.signatureImage?.bytes())).toBe("GIF89a");
+  });
+
+  it("accepts an empty Signature (no signature found) with bare-array warnings", async () => {
+    // live shape: { Signature: {}, Warnings: [{Message,Code}] }
+    const fetchMock = mockFetch(200, {
+      Signature: {},
+      Warnings: [{ Message: "No signature found", Code: "2" }],
+    });
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    const out = await c.tracking.signature("3SX");
+    // empty Signature {} must be omitted, not surfaced as a truthy empty object
+    expect(out.signature).toBeUndefined();
+    expect(out.warnings).toHaveLength(1);
+    expect(out.warnings[0]?.message).toBe("No signature found");
   });
 
   it("unwraps signature Warnings.Warning wrapper", async () => {

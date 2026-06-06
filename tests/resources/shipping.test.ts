@@ -58,6 +58,23 @@ describe("shipping v4", () => {
     expect(out.items[0]?.labels?.[0]?.contentType).toBe("application/pdf");
   });
 
+  it("parses productService.services as a string list (live v4 shape)", async () => {
+    const fetchMock = f({
+      items: [
+        {
+          barcode: "3SX",
+          productService: {
+            productData: "Parcels Netherlands",
+            services: ["Delivery at neighbours"],
+          },
+        },
+      ],
+    });
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    const out = await c.shipping.create(input);
+    expect(out.items[0]?.productService?.services).toEqual(["Delivery at neighbours"]);
+  });
+
   it("confirm -> /confirm", async () => {
     const fetchMock = f({ items: [{ barcode: "3SX" }] });
     const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });

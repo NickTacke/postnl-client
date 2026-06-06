@@ -215,11 +215,13 @@ const labelResponseSchema = z
     };
   });
 
+// untyped in sdk (List[Any]); doc examples show objects, but live v4 returns plain
+// strings (e.g. "Delivery at neighbours") — accept either shape.
+const productServiceEntry = z.union([z.string(), z.record(z.unknown())]);
 export const productServiceSchema = z.object({
   productData: z.string().optional(),
-  // untyped in sdk (List[Any]); doc examples show objects
-  services: z.array(z.record(z.unknown())).optional(),
-  bundles: z.array(z.record(z.unknown())).optional(),
+  services: z.array(productServiceEntry).optional(),
+  bundles: z.array(productServiceEntry).optional(),
 });
 
 // Item / ItemPNPShipmentLabel / ItemPNPGenerateShipmentReturnV4 (superset; labels optional)

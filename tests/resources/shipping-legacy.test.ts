@@ -75,6 +75,33 @@ describe("shipping.legacy.label", () => {
     expect(out.responseShipments[0]?.labels[0]?.bytes()).toBeInstanceOf(Uint8Array);
   });
 
+  it("accepts a shipment without a barcode (PostNL assigns one) and omits it from the wire body", async () => {
+    const fetchMock = mockFetch(200, {
+      ResponseShipments: [
+        { Barcode: "3SDEVC0000001", Labels: [{ Content: btoa("PDF"), OutputType: "PDF" }] },
+      ],
+    });
+    const client = new PostNLClient({
+      apiKey: "k",
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+    const out = await client.shipping.legacy.label({
+      ...labelInput,
+      shipments: [
+        {
+          addresses: [{ addressType: "01", countrycode: "NL", city: "Utrecht", name: "Janssen" }],
+          dimension: { weight: 2000 },
+          productCodeDelivery: "3085",
+        },
+      ],
+    });
+
+    const req = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    const sentBody = JSON.parse(req[1].body as string);
+    expect("Barcode" in sentBody.Shipments[0]).toBe(false);
+    expect(out.responseShipments[0]?.barcode).toBe("3SDEVC0000001");
+  });
+
   it("honours confirm=false", async () => {
     const fetchMock = mockFetch(200, { ResponseShipments: [] });
     const client = new PostNLClient({

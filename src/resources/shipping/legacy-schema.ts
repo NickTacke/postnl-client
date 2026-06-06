@@ -207,7 +207,8 @@ export const legacyExtraFieldSchema = z
 // shared shipment shape for labelling + confirming (confirming ignores extraFields)
 const legacyShipmentShape = {
   addresses: z.array(legacyAddressSchema),
-  barcode: z.string(),
+  // optional on labelling: PostNL assigns a barcode when omitted. confirming overrides to required.
+  barcode: z.string().optional(),
   dimension: legacyDimensionSchema,
   productCodeDelivery: z.string(),
   amounts: z.array(legacyAmountSchema).optional(),
@@ -341,9 +342,9 @@ export const legacyConfirmingMessageSchema = z
     MessageTimeStamp: m.messageTimeStamp ?? formatDate(new Date(), "datetime"),
   }));
 
-// ConfirmingShipment (no ExtraFields vs labelling)
+// ConfirmingShipment (no ExtraFields vs labelling; barcode required to identify the shipment)
 export const legacyConfirmingShipmentSchema = z
-  .object(legacyShipmentShape)
+  .object({ ...legacyShipmentShape, barcode: z.string() })
   .transform((s) => toWireShipment(s));
 
 // ConfirmingRequest

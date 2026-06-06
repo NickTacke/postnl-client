@@ -3,6 +3,7 @@
 export const ProductCode = {
   domesticParcel: "3085",
   domesticInsured: "3087",
+  mailboxParcel: "2928",
   easyReturn: "4910",
 } as const;
 export type ProductCodeValue = (typeof ProductCode)[keyof typeof ProductCode];

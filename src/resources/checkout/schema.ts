@@ -184,20 +184,20 @@ const pickupOptionSchema = z
     locations: p.Locations,
   }));
 
-// CheckoutWarning { DeliveryDate, Code, Description, Options(plain string) }
+// CheckoutWarning { DeliveryDate, Code, Description, Options(string or array) }
 const warningSchema = z
   .object({
     DeliveryDate: pnlDateField,
     Code: z.string().optional(),
     Description: z.string().optional(),
-    Options: z.string().optional(),
+    Options: pnlArray(z.string()),
   })
   .transform((w) =>
     stripUndefined({
       deliveryDate: w.DeliveryDate,
       code: w.Code,
       description: w.Description,
-      options: w.Options,
+      options: w.Options.length ? w.Options : undefined,
     }),
   );
 

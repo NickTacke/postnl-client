@@ -230,8 +230,9 @@ const completeStatusShipmentSchema = baseShipmentSchema
 
 export const shippingStatusResponseSchema = z
   .object({
-    CurrentStatus: z.object({ Shipment: currentStatusShipmentSchema }).optional(),
-    CompleteStatus: z.object({ Shipment: completeStatusShipmentSchema }).optional(),
+    // Shipment is absent when no shipment is found (CurrentStatus arrives as {})
+    CurrentStatus: z.object({ Shipment: currentStatusShipmentSchema.optional() }).optional(),
+    CompleteStatus: z.object({ Shipment: completeStatusShipmentSchema.optional() }).optional(),
     Warnings: pnlArray(warningSchema),
   })
   .transform((r) => ({
@@ -262,14 +263,21 @@ const signatureSchema = z
 export const signatureResponseSchema = z
   .object({
     Signature: signatureSchema.optional(),
-    // signature Warnings is a single-object wrapper { Warning: {...} }; unwrap to a 1-element array
-    Warnings: z
-      .object({ Warning: pnlArray(warningSchema) })
-      .optional()
-      .transform((w) => w?.Warning ?? []),
+    // signature Warnings arrives either as a bare array [{Message,Code}] (no signature found)
+    // or wrapped as { Warning: {...} }; unwrap the wrapper, then normalize to an array
+    Warnings: z.preprocess(
+      (w) =>
+        w && typeof w === "object" && !Array.isArray(w) && "Warning" in w
+          ? (w as { Warning: unknown }).Warning
+          : w,
+      pnlArray(warningSchema),
+    ),
   })
   .transform((r) => ({
-    ...stripUndefined({ signature: r.Signature }),
+    // no-signature responses send Signature: {}; omit it so `if (out.signature)` stays meaningful
+    ...stripUndefined({
+      signature: r.Signature && Object.keys(r.Signature).length ? r.Signature : undefined,
+    }),
     warnings: r.Warnings,
   }));
 export type SignatureResponse = z.infer<typeof signatureResponseSchema>;

@@ -80,8 +80,18 @@ describe("location.nearest", () => {
     expect(loc?.longitude).toBe(5.13634192);
     expect(loc?.distance).toBe(102);
     expect(loc?.locationCode).toBe(163043);
-    expect(loc?.openingHours?.monday).toBe("08:00-18:00");
+    expect(loc?.openingHours?.monday).toEqual(["08:00-18:00"]);
     expect(loc?.address?.houseNumber).toBe(136);
+  });
+
+  it("parses split opening hours ({string:[...]}) into a string array", async () => {
+    const fetchMock = mockFetch(
+      200,
+      locationBody({ OpeningHours: { Monday: { string: ["09:15-12:30", "13:00-18:00"] } } }),
+    );
+    const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
+    const out = await c.location.nearest({ countryCode: "NL", postalCode: "2132WT" });
+    expect(out.locations[0]?.openingHours?.monday).toEqual(["09:15-12:30", "13:00-18:00"]);
   });
 
   it("normalizes a single ResponseLocation object to an array", async () => {
