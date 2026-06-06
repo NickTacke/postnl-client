@@ -135,6 +135,8 @@ describe("tracking.signature", () => {
     });
     const c = new PostNLClient({ apiKey: "k", fetch: fetchMock as unknown as typeof fetch });
     const out = await c.tracking.signature("3SX");
+    // empty Signature {} must be omitted, not surfaced as a truthy empty object
+    expect(out.signature).toBeUndefined();
     expect(out.warnings).toHaveLength(1);
     expect(out.warnings[0]?.message).toBe("No signature found");
   });

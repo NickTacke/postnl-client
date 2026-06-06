@@ -274,7 +274,10 @@ export const signatureResponseSchema = z
     ),
   })
   .transform((r) => ({
-    ...stripUndefined({ signature: r.Signature }),
+    // no-signature responses send Signature: {}; omit it so `if (out.signature)` stays meaningful
+    ...stripUndefined({
+      signature: r.Signature && Object.keys(r.Signature).length ? r.Signature : undefined,
+    }),
     warnings: r.Warnings,
   }));
 export type SignatureResponse = z.infer<typeof signatureResponseSchema>;
